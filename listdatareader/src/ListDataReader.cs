@@ -17,8 +17,8 @@ namespace umbe.data {
             _counter = -1;
             _delegates = new Dictionary<int, Func<T, object>> ();
             _propertyIndexes = new Dictionary<string, int> ();
-            _propertyNames = new Dictionary<int, string>();
-            _propertyTypes = new Dictionary<int, Type>();
+            _propertyNames = new Dictionary<int, string> ();
+            _propertyTypes = new Dictionary<int, Type> ();
 
             var properties = typeof (T).GetProperties (BindingFlags.Instance | BindingFlags.Public);
             for (var i = 0; i < properties.Length; ++i) {
@@ -26,7 +26,7 @@ namespace umbe.data {
                 _delegates.Add (i, (Func<T, object>) Delegate.CreateDelegate (typeof (Func<T, object>), property.GetGetMethod (nonPublic: true)));
                 _propertyIndexes.Add (property.Name, i);
                 _propertyNames.Add (i, property.Name);
-                _propertyTypes.Add(i, property.PropertyType);
+                _propertyTypes.Add (i, property.PropertyType);
             }
         }
         public object this [int i] => _delegates[i] (_current);
@@ -50,26 +50,34 @@ namespace umbe.data {
         }
 
         public bool GetBoolean (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (bool) _delegates[i] (_current);
         }
 
         public byte GetByte (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (byte) _delegates[i] (_current);
         }
 
         public long GetBytes (int i, long fieldOffset, byte[] buffer, int bufferoffset, int length) {
-            throw new NotImplementedException ();
+            CheckIndex (i);
+            var bytes = (byte[]) _delegates[i] (_current);
+            Array.Copy (bytes, fieldOffset, buffer, bufferoffset, length);
+
+            return bytes.Length;
         }
 
         public char GetChar (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (char) _delegates[i] (_current);
         }
 
-        public long GetChars (int i, long fieldoffset, char[] buffer, int bufferoffset, int length) {
-            throw new NotImplementedException ();
+        public long GetChars (int i, long fieldOffset, char[] buffer, int bufferoffset, int length) {
+            CheckIndex (i);
+            var chars = (char[])_delegates[i](_current);
+            Array.Copy (chars, fieldOffset, buffer, bufferoffset, length);
+
+            return chars.Length;
         }
 
         public IDataReader GetData (int i) {
@@ -77,62 +85,62 @@ namespace umbe.data {
         }
 
         public string GetDataTypeName (int i) {
-            CheckIndex(i);
-            return _propertyTypes[i].ToString();
+            CheckIndex (i);
+            return _propertyTypes[i].ToString ();
         }
 
         public DateTime GetDateTime (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (DateTime) _delegates[i] (_current);
         }
 
         public decimal GetDecimal (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (decimal) _delegates[i] (_current);
         }
 
         public double GetDouble (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (double) _delegates[i] (_current);
         }
 
         public Type GetFieldType (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return _propertyTypes[i];
         }
 
         public float GetFloat (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (float) _delegates[i] (_current);
         }
 
         public Guid GetGuid (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (Guid) _delegates[i] (_current);
         }
 
         public short GetInt16 (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (short) _delegates[i] (_current);
         }
 
         public int GetInt32 (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (int) _delegates[i] (_current);
         }
 
         public long GetInt64 (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (long) _delegates[i] (_current);
         }
 
         public string GetName (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return _propertyNames[i];
         }
 
         public int GetOrdinal (string name) {
-            CheckName(name);
+            CheckName (name);
             return _propertyIndexes[name];
         }
 
@@ -141,12 +149,12 @@ namespace umbe.data {
         }
 
         public string GetString (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return (string) _delegates[i] (_current);
         }
 
         public object GetValue (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return this [i];
         }
 
@@ -159,7 +167,7 @@ namespace umbe.data {
         }
 
         public bool IsDBNull (int i) {
-            CheckIndex(i);
+            CheckIndex (i);
             return this [i] == null;
         }
 
@@ -175,15 +183,15 @@ namespace umbe.data {
             return false;
         }
 
-        private void CheckName(string name){
-            if (!_propertyIndexes.ContainsKey(name)){
-                throw new IndexOutOfRangeException($"{name} is not a property");
+        private void CheckName (string name) {
+            if (!_propertyIndexes.ContainsKey (name)) {
+                throw new IndexOutOfRangeException ($"{name} is not a property");
             }
         }
 
-        private void CheckIndex(int i){
-            if (i>=_propertyIndexes.Keys.Count){
-                throw new IndexOutOfRangeException();
+        private void CheckIndex (int i) {
+            if (i >= _propertyIndexes.Keys.Count) {
+                throw new IndexOutOfRangeException ();
             }
         }
     }

@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "listdatareader", "listdatareader\listdatareader.csproj", "{E4D799A1-822E-4F80-B422-0D6F1C9D9B3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "listdatareader.test", "listdatareader.test\listdatareader.test.csproj", "{6A351622-FAF2-4101-8286-56490CD526A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{E4D799A1-822E-4F80-B422-0D6F1C9D9B3B}.Release|x64.Build.0 = Release|Any CPU
 		{E4D799A1-822E-4F80-B422-0D6F1C9D9B3B}.Release|x86.ActiveCfg = Release|Any CPU
 		{E4D799A1-822E-4F80-B422-0D6F1C9D9B3B}.Release|x86.Build.0 = Release|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Debug|x64.Build.0 = Debug|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Debug|x86.Build.0 = Debug|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Release|x64.ActiveCfg = Release|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Release|x64.Build.0 = Release|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Release|x86.ActiveCfg = Release|Any CPU
+		{6A351622-FAF2-4101-8286-56490CD526A3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

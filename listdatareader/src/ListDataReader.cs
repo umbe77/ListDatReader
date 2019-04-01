@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace umbe.data {
@@ -12,6 +13,16 @@ namespace umbe.data {
         private Dictionary<string, int> _propertyIndexes;
         private Dictionary<int, string> _propertyNames;
         private Dictionary<int, Type> _propertyTypes;
+
+        private Func<T, object> GetDelegate (PropertyInfo property, ParameterExpression instance, UnaryExpression instanceCast) {
+            return Expression.Lambda<Func<T, object>>(
+                Expression.TypeAs(
+                    Expression.Call(instanceCast, property.GetGetMethod(nonPublic: true)),
+                    typeof(object)),
+                instance
+                ).Compile();
+        }
+
         public ListDataReader (List<T> list) {
             _list = list;
             _counter = -1;
@@ -20,10 +31,17 @@ namespace umbe.data {
             _propertyNames = new Dictionary<int, string> ();
             _propertyTypes = new Dictionary<int, Type> ();
 
-            var properties = typeof (T).GetProperties (BindingFlags.Instance | BindingFlags.Public);
+            var properties = typeof (T).GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            var instance = ParameterExpression.Parameter (typeof (object), "instance");
+
             for (var i = 0; i < properties.Length; ++i) {
                 var property = properties[i];
-                _delegates.Add (i, (Func<T, object>) Delegate.CreateDelegate (typeof (Func<T, object>), property.GetGetMethod (nonPublic: true)));
+
+                var instanceCast = !property.DeclaringType.IsValueType ? 
+                    Expression.TypeAs (instance, property.DeclaringType) : 
+                    Expression.Convert (instance, property.DeclaringType);
+
+                _delegates.Add (i, GetDelegate(property, instance, instanceCast));
                 _propertyIndexes.Add (property.Name, i);
                 _propertyNames.Add (i, property.Name);
                 _propertyTypes.Add (i, property.PropertyType);
@@ -74,7 +92,7 @@ namespace umbe.data {
 
         public long GetChars (int i, long fieldOffset, char[] buffer, int bufferoffset, int length) {
             CheckIndex (i);
-            var chars = (char[])_delegates[i](_current);
+            var chars = (char[]) _delegates[i] (_current);
             Array.Copy (chars, fieldOffset, buffer, bufferoffset, length);
 
             return chars.Length;
@@ -176,8 +194,9 @@ namespace umbe.data {
         }
 
         public bool Read () {
+            _counter++;
             if (_list.Count > 0 && _counter < _list.Count) {
-                _current = _list[++_counter];
+                _current = _list[_counter];
                 return true;
             }
             return false;

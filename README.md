@@ -1,6 +1,3 @@
----
-typora-copy-images-to: ./
----
 
 Questo progetto è inteso come esempio e studio per controllare e manipolare una lista di oggetti generici all'interno di un IDataReader
 

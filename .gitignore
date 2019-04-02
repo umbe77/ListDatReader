@@ -37,4 +37,4 @@ msbuild.wrn
 .vs/
 
 # BenchmarkDotNet
-BenchmarkDotNet.Artifacts/
+BenchmarkDotNet.Artifacts
